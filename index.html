@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stack Up: Build the AI-Powered World | PUP CCIS</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E8281A;
+    --red-dark: #B81D12;
+    --red-glow: rgba(232,40,26,0.18);
+    --red-soft: rgba(232,40,26,0.08);
+  }
+  [data-theme="dark"] {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #161616;
+    --bg4: #1c1c1c;
+    --text: #f0f0f0;
+    --text2: #a0a0a0;
+    --text3: #666;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --card-bg: #131313;
+    --nav-bg: rgba(10,10,10,0.92);
+  }
+  [data-theme="light"] {
+    --bg: #ffffff;
+    --bg2: #f7f7f7;
+    --bg3: #efefef;
+    --bg4: #e8e8e8;
+    --text: #111111;
+    --text2: #555555;
+    --text3: #999;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.15);
+    --card-bg: #ffffff;
+    --nav-bg: rgba(255,255,255,0.92);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: var(--nav-bg);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.3s;
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 60px;
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem; letter-spacing: 2px;
+    color: var(--text); text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo span { color: var(--red); }
+  .nav-links {
+    display: flex; align-items: center; gap: 2rem; list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text2); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--red); }
+  .nav-actions { display: flex; align-items: center; gap: 12px; }
+  .theme-toggle {
+    background: none; border: 1px solid var(--border2);
+    color: var(--text2); border-radius: 20px;
+    padding: 5px 12px; cursor: pointer; font-size: 0.75rem;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase; transition: all 0.2s;
+  }
+  .theme-toggle:hover { border-color: var(--red); color: var(--red); }
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    background: none; border: none; cursor: pointer; padding: 4px;
+  }
+  .hamburger span {
+    display: block; width: 24px; height: 2px;
+    background: var(--text); border-radius: 2px; transition: all 0.3s;
+  }
+  .mobile-menu {
+    display: none; position: fixed; top: 60px; left: 0; right: 0; bottom: 0;
+    background: var(--bg); z-index: 999; padding: 2rem 1.5rem;
+    flex-direction: column; gap: 1.5rem;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px;
+    color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem; transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--red); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden; padding: 80px 1.5rem 0;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: var(--bg);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+  }
+  .hero-glow {
+    position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, var(--red-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-content {
+    position: relative; z-index: 1; text-align: center; max-width: 1000px;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--red-soft); border: 1px solid rgba(232,40,26,0.3);
+    color: var(--red); border-radius: 30px;
+    padding: 6px 16px; font-size: 0.78rem; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 2rem;
+    animation: fadeInDown 0.8s ease both;
+  }
+  .hero-badge::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--red); animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 10vw, 9rem);
+    line-height: 0.9; letter-spacing: 4px;
+    color: var(--text);
+    animation: fadeInUp 0.9s ease 0.2s both;
+  }
+  .hero-title .accent { color: var(--red); }
+  .hero-title .outline {
+    -webkit-text-stroke: 2px var(--text);
+    color: transparent;
+  }
+  [data-theme="light"] .hero-title .outline {
+    -webkit-text-stroke: 2px var(--text);
+  }
+  .hero-subtitle {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-weight: 400; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--text2); margin: 1.5rem 0 2.5rem;
+    animation: fadeInUp 0.9s ease 0.4s both;
+  }
+  .hero-desc {
+    font-size: 1rem; color: var(--text2); max-width: 600px; margin: 0 auto 3rem;
+    line-height: 1.7; animation: fadeInUp 0.9s ease 0.5s both;
+  }
+  .hero-cta {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    animation: fadeInUp 0.9s ease 0.6s both;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--red); color: #fff;
+    border: none; border-radius: 4px;
+    padding: 14px 36px; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    cursor: pointer; text-decoration: none; transition: all 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .btn-primary::after {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(255,255,255,0.1); transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+  .btn-primary:hover::after { transform: translateX(0); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(232,40,26,0.4); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: transparent; color: var(--text);
+    border: 1px solid var(--border2); border-radius: 4px;
+    padding: 14px 36px; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    cursor: pointer; text-decoration: none; transition: all 0.25s;
+  }
+  .btn-secondary:hover { border-color: var(--red); color: var(--red); transform: translateY(-2px); }
+
+  .hero-scroll {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--text3); font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    animation: fadeIn 1s ease 1.2s both;
+  }
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--red), transparent);
+    animation: scrollDrop 1.5s ease-in-out infinite;
+  }
+  @keyframes scrollDrop { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+
+  @keyframes fadeInDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 100px 1.5rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--red); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::before {
+    content: ''; display: block; width: 30px; height: 2px; background: var(--red);
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1; letter-spacing: 2px; color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+  .section-title .accent { color: var(--red); }
+
+  /* ─── ABOUT CCIS ─── */
+  #about { background: var(--bg2); }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  }
+  .about-visual {
+    position: relative; aspect-ratio: 1; max-width: 420px;
+  }
+  .about-emblem {
+    width: 100%; height: 100%; border-radius: 8px;
+    background: var(--bg3); border: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+    position: relative; overflow: hidden;
+  }
+  .about-emblem::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--red-soft) 0%, transparent 60%);
+  }
+  .about-emblem-icon {
+    width: 100px; height: 100px; border: 3px solid var(--red);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 1;
+  }
+  .about-emblem-icon svg { width: 50px; height: 50px; fill: var(--red); }
+  .about-emblem-text {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem;
+    letter-spacing: 3px; color: var(--text); position: relative; z-index: 1; text-align: center;
+    padding: 0 1rem;
+  }
+  .about-emblem-sub {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--text2);
+    position: relative; z-index: 1;
+  }
+  .corner-accent {
+    position: absolute; border-color: var(--red); border-style: solid;
+    width: 30px; height: 30px;
+  }
+  .corner-accent.tl { top: 16px; left: 16px; border-width: 2px 0 0 2px; }
+  .corner-accent.br { bottom: 16px; right: 16px; border-width: 0 2px 2px 0; }
+  .about-text p { color: var(--text2); margin-bottom: 1rem; font-size: 1rem; line-height: 1.8; }
+  .about-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2.5rem;
+  }
+  .stat-card {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1.25rem; text-align: center;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem;
+    color: var(--red); line-height: 1;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--text2); margin-top: 4px; letter-spacing: 1px; }
+
+  /* ─── OBJECTIVES ─── */
+  #objectives { background: var(--bg); }
+  .obj-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .obj-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 2rem; position: relative; overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .obj-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--red); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .obj-card:hover { border-color: var(--border2); transform: translateY(-4px); }
+  .obj-card:hover::before { transform: scaleX(1); }
+  .obj-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem;
+    color: var(--border2); line-height: 1; margin-bottom: 1rem;
+  }
+  .obj-icon {
+    width: 44px; height: 44px; border-radius: 8px;
+    background: var(--red-soft); border: 1px solid rgba(232,40,26,0.2);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;
+    font-size: 1.2rem;
+  }
+  .obj-card h3 {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem;
+    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text); margin-bottom: 0.75rem;
+  }
+  .obj-card p { font-size: 0.9rem; color: var(--text2); line-height: 1.7; }
+
+  /* ─── SPEAKERS ─── */
+  #speakers { background: var(--bg2); }
+  .speakers-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .speaker-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden; text-align: center;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+  }
+  .speaker-card:hover { border-color: var(--red); transform: translateY(-6px); }
+  .speaker-card:hover .speaker-overlay { opacity: 1; }
+  .speaker-img-wrap {
+    aspect-ratio: 1; background: var(--bg3);
+    position: relative; overflow: hidden;
+  }
+  .speaker-img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    background: var(--bg4);
+  }
+  .speaker-avatar {
+    width: 70px; height: 70px; border-radius: 50%;
+    background: var(--bg3); border: 3px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .speaker-avatar svg { width: 38px; height: 38px; fill: var(--text3); }
+  .speaker-img-label {
+    font-size: 0.7rem; color: var(--text3); letter-spacing: 1px; text-transform: uppercase;
+  }
+  .speaker-overlay {
+    position: absolute; inset: 0;
+    background: rgba(232,40,26,0.08);
+    transition: opacity 0.3s; opacity: 0;
+    border-top: 3px solid var(--red);
+  }
+  .speaker-info { padding: 1.25rem; }
+  .speaker-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.05rem; font-weight: 700; letter-spacing: 0.5px;
+    color: var(--text); margin-bottom: 4px;
+  }
+  .speaker-role { font-size: 0.78rem; color: var(--red); letter-spacing: 0.5px; margin-bottom: 4px; }
+  .speaker-org { font-size: 0.75rem; color: var(--text3); }
+
+  /* ─── PROGRAM FLOW ─── */
+  #program { background: var(--bg); }
+  .program-layout {
+    display: grid; grid-template-columns: 200px 1fr; gap: 0; margin-top: 3rem;
+    position: relative;
+  }
+  .program-timeline {
+    position: relative;
+    border-right: 2px solid var(--border);
+  }
+  .timeline-item {
+    padding: 0 1.5rem 0 0; margin-bottom: 0; position: relative;
+  }
+  .timeline-time {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 1px;
+    color: var(--red); text-align: right; padding: 2rem 1.5rem 0 0;
+  }
+  .timeline-content { padding: 0 0 0 2rem; }
+  .program-event {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem;
+    position: relative; transition: border-color 0.3s;
+    display: flex; align-items: flex-start; gap: 1rem;
+  }
+  .program-event:hover { border-color: var(--border2); }
+  .event-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--red); flex-shrink: 0; margin-top: 5px;
+    box-shadow: 0 0 0 4px var(--red-soft);
+  }
+  .event-dot.break { background: var(--text3); box-shadow: none; }
+  .event-body { flex: 1; }
+  .event-time {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem;
+    font-weight: 600; letter-spacing: 1.5px; color: var(--text3);
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+  .event-title {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem;
+    font-weight: 700; letter-spacing: 0.5px; color: var(--text); margin-bottom: 4px;
+  }
+  .event-desc { font-size: 0.85rem; color: var(--text2); }
+  .event-tag {
+    display: inline-block; padding: 2px 10px;
+    background: var(--red-soft); border: 1px solid rgba(232,40,26,0.2);
+    color: var(--red); border-radius: 20px; font-size: 0.7rem;
+    font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-top: 8px;
+  }
+  .event-tag.keynote { background: rgba(40,120,232,0.08); border-color: rgba(40,120,232,0.2); color: #4a90e2; }
+  .event-tag.break-tag { background: var(--bg3); border-color: var(--border); color: var(--text3); }
+
+  .program-simple { margin-top: 3rem; display: flex; flex-direction: column; gap: 1rem; }
+
+  /* ─── CONTACT ─── */
+  #contact { background: var(--bg2); }
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; margin-top: 3rem;
+  }
+  .contact-info h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.3rem; font-weight: 700; letter-spacing: 1px;
+    color: var(--text); margin-bottom: 1.5rem;
+  }
+  .contact-item {
+    display: flex; gap: 16px; align-items: flex-start; margin-bottom: 1.5rem;
+  }
+  .contact-icon {
+    width: 42px; height: 42px; flex-shrink: 0;
+    background: var(--red-soft); border: 1px solid rgba(232,40,26,0.2);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+  .contact-detail { flex: 1; }
+  .contact-detail strong {
+    display: block; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--text3); margin-bottom: 2px;
+  }
+  .contact-detail p { font-size: 0.95rem; color: var(--text2); }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem;
+    font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3);
+  }
+  .form-group input, .form-group textarea, .form-group select {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); border-radius: 6px; padding: 12px 16px;
+    font-family: 'Barlow', sans-serif; font-size: 0.95rem;
+    transition: border-color 0.2s; outline: none;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border-color: var(--red);
+  }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 60px 1.5rem 30px;
+  }
+  .footer-inner { max-width: 1200px; margin: 0 auto; }
+  .footer-top {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 3rem;
+  }
+  .footer-brand p {
+    font-size: 0.9rem; color: var(--text2); margin-top: 0.75rem; line-height: 1.7;
+    max-width: 280px;
+  }
+  .footer-col h4 {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem;
+    font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text3); margin-bottom: 1rem;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .footer-col ul a {
+    font-size: 0.88rem; color: var(--text2); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-col ul a:hover { color: var(--red); }
+  .footer-bottom {
+    border-top: 1px solid var(--border); padding-top: 1.5rem;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    font-size: 0.8rem; color: var(--text3);
+  }
+  .footer-bottom span { display: flex; align-items: center; gap: 4px; }
+  .footer-bottom .heart { color: var(--red); }
+
+  /* ─── DIVIDERS ─── */
+  .divider {
+    width: 60px; height: 3px; background: var(--red); margin-bottom: 2rem;
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+  .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .about-grid { grid-template-columns: 1fr; }
+    .about-visual { max-width: 300px; margin: 0 auto; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .program-layout { grid-template-columns: 1fr; }
+    .program-timeline { display: none; }
+    .about-stats { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .hero-title { letter-spacing: 2px; }
+    .footer-top { grid-template-columns: 1fr; }
+    .about-stats { grid-template-columns: repeat(2, 1fr); }
+    .form-row { grid-template-columns: 1fr; }
+    .speakers-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ─── RED LINE ACCENT ─── */
+  .red-line {
+    display: inline-block; width: 40px; height: 3px;
+    background: var(--red); vertical-align: middle; margin-right: 10px;
+  }
+
+  /* ─── INTRO STRIP ─── */
+  .strip {
+    background: var(--red); padding: 14px 0; overflow: hidden; position: relative;
+  }
+  .strip-inner {
+    display: flex; gap: 3rem; width: max-content;
+    animation: marquee 20s linear infinite;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
+    letter-spacing: 4px; color: rgba(255,255,255,0.85);
+    align-items: center;
+  }
+  .strip-inner span { white-space: nowrap; }
+  .strip-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.5); }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">STACK<span>UP</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About CCIS</a></li>
+      <li><a href="#objectives">Objectives</a></li>
+      <li><a href="#speakers">Speakers</a></li>
+      <li><a href="#program">Program</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
+      <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="closeMenu()">About CCIS</a>
+  <a href="#objectives" onclick="closeMenu()">Objectives</a>
+  <a href="#speakers" onclick="closeMenu()">Speakers</a>
+  <a href="#program" onclick="closeMenu()">Program</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">PUP CCIS Technical Seminar 2025</div>
+    <h1 class="hero-title">
+      STACK<br>
+      <span class="accent">UP</span>
+    </h1>
+    <p class="hero-subtitle">Build the AI-Powered World Before It Builds Without You</p>
+    <p class="hero-desc">
+      A technical seminar designed to transition students from AI users to AI builders — featuring cloud-native deployment, autonomous agent development, and responsible AI systems.
+    </p>
+    <div class="hero-cta">
+      <a href="#" class="btn-primary" title="Registration link coming soon">
+        Register Now &nbsp;→
+        <span style="font-size:0.7rem;opacity:0.7;font-weight:400">(Link Soon)</span>
+      </a>
+      <a href="#about" class="btn-secondary">Learn More</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE STRIP -->
+<div class="strip">
+  <div class="strip-inner" id="marqueeInner">
+    <span>Cloud-Native Deployment</span><div class="strip-dot"></div>
+    <span>Autonomous AI Agents</span><div class="strip-dot"></div>
+    <span>Real-World Applications</span><div class="strip-dot"></div>
+    <span>AI Ethics &amp; Compliance</span><div class="strip-dot"></div>
+    <span>Post-Quantum Security</span><div class="strip-dot"></div>
+    <span>AI Governance</span><div class="strip-dot"></div>
+    <span>Production-Ready Skills</span><div class="strip-dot"></div>
+    <span>Cloud-Native Deployment</span><div class="strip-dot"></div>
+    <span>Autonomous AI Agents</span><div class="strip-dot"></div>
+    <span>Real-World Applications</span><div class="strip-dot"></div>
+    <span>AI Ethics &amp; Compliance</span><div class="strip-dot"></div>
+    <span>Post-Quantum Security</span><div class="strip-dot"></div>
+    <span>AI Governance</span><div class="strip-dot"></div>
+    <span>Production-Ready Skills</span><div class="strip-dot"></div>
+  </div>
+</div>
+
+<!-- ABOUT CCIS -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="reveal-left">
+        <div class="section-label">About</div>
+        <h2 class="section-title">About <span class="accent">CCIS</span></h2>
+        <div class="divider"></div>
+        <div class="about-text">
+          <p>The <strong>College of Computer and Information Sciences (CCIS)</strong> of the Polytechnic University of the Philippines is a premier institution dedicated to producing globally competitive IT professionals.</p>
+          <p>CCIS offers programs in Computer Science, Information Technology, and Information Systems — equipping students with technical excellence, critical thinking, and a strong foundation in computing and digital innovation.</p>
+          <p>As part of PUP's mandate to deliver quality education to deserving Filipinos, CCIS continuously bridges the gap between academic knowledge and industry demands through relevant seminars, research, and community engagement.</p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-card">
+            <div class="stat-num">3+</div>
+            <div class="stat-label">Degree Programs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">5K+</div>
+            <div class="stat-label">Graduates</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">PUP</div>
+            <div class="stat-label">Manila Campus</div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-right" style="display:flex;justify-content:center;">
+        <div class="about-visual">
+          <div class="about-emblem">
+            <div class="corner-accent tl"></div>
+            <div class="corner-accent br"></div>
+            <div class="about-emblem-icon">
+              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <path d="M32 4L8 16v16c0 13.3 10.3 25.7 24 29 13.7-3.3 24-15.7 24-29V16L32 4zm0 8l18 9v15c0 9.8-7.4 18.9-18 22-10.6-3.1-18-12.2-18-22V21l18-9z"/>
+                <path d="M22 32l6 6 14-14-2-2-12 12-4-4z"/>
+              </svg>
+            </div>
+            <div class="about-emblem-text">Polytechnic University<br>of the Philippines</div>
+            <div class="about-emblem-sub">College of Computer &amp; Information Sciences</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OBJECTIVES -->
+<section id="objectives">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">What You'll Gain</div>
+      <h2 class="section-title">Seminar <span class="accent">Objectives</span></h2>
+      <div class="divider"></div>
+      <p style="color:var(--text2);max-width:680px;font-size:1rem;line-height:1.8;">
+        This seminar equips PUP CCIS students with a practical and industry-aligned understanding of autonomous AI systems — from architecture to deployment to compliance.
+      </p>
+    </div>
+    <div class="obj-grid">
+      <div class="obj-card reveal" style="transition-delay:0.1s">
+        <div class="obj-num">01</div>
+        <div class="obj-icon">☁️</div>
+        <h3>Cloud-Native Deployment</h3>
+        <p>Develop competencies in deploying AI systems using cloud-native infrastructure — containers, orchestration, and scalable architecture patterns used in production.</p>
+      </div>
+      <div class="obj-card reveal" style="transition-delay:0.15s">
+        <div class="obj-num">02</div>
+        <div class="obj-icon">🤖</div>
+        <h3>Agent Architecture</h3>
+        <p>Master the building blocks of autonomous agents — memory systems, planning modules, tool-use frameworks, and action loops for real-world task completion.</p>
+      </div>
+      <div class="obj-card reveal" style="transition-delay:0.2s">
+        <div class="obj-num">03</div>
+        <div class="obj-icon">🔍</div>
+        <h3>System Evaluation</h3>
+        <p>Build critical frameworks for evaluating AI systems in real-world environments — accuracy, robustness, fairness, and production-readiness benchmarks.</p>
+      </div>
+      <div class="obj-card reveal" style="transition-delay:0.25s">
+        <div class="obj-num">04</div>
+        <div class="obj-icon">⚖️</div>
+        <h3>Data Privacy & Compliance</h3>
+        <p>Understand Philippine data privacy laws and global AI regulations — ensuring AI deployments align with legal and ethical obligations.</p>
+      </div>
+      <div class="obj-card reveal" style="transition-delay:0.3s">
+        <div class="obj-num">05</div>
+        <div class="obj-icon">🛡️</div>
+        <h3>AI Governance & Ethics</h3>
+        <p>Strengthen ethical responsibility through awareness of governance gaps, bias mitigation, and responsible design principles for AI practitioners.</p>
+      </div>
+      <div class="obj-card reveal" style="transition-delay:0.35s">
+        <div class="obj-num">06</div>
+        <div class="obj-icon">🔐</div>
+        <h3>Post-Quantum Security</h3>
+        <p>Gain forward-looking insights into post-quantum cryptography and the evolving security landscape for AI systems in the next decade.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPEAKERS -->
+<section id="speakers">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Expert Lineup</div>
+      <h2 class="section-title">Featured <span class="accent">Speakers</span></h2>
+      <div class="divider"></div>
+      <p style="color:var(--text2);max-width:600px;font-size:1rem;line-height:1.8;">
+        Learn from industry practitioners and thought leaders shaping the future of AI systems and cloud technology.
+      </p>
+    </div>
+    <div class="speakers-grid">
+
+      <!-- Speaker 1 -->
+      <div class="speaker-card reveal" style="transition-delay:0.1s">
+        <div class="speaker-img-wrap">
+          <div class="speaker-img-placeholder">
+            <div class="speaker-avatar">
+              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="22" r="12"/><path d="M10 54c0-12.1 9.9-22 22-22s22 9.9 22 22"/>
+              </svg>
+            </div>
+            <span class="speaker-img-label">Speaker Photo</span>
+          </div>
+          <div class="speaker-overlay"></div>
+        </div>
+        <div class="speaker-info">
+          <div class="speaker-name">Speaker One</div>
+          <div class="speaker-role">AI Systems Architect</div>
+          <div class="speaker-org">Topic: Cloud-Native AI Deployment</div>
+        </div>
+      </div>
+
+      <!-- Speaker 2 -->
+      <div class="speaker-card reveal" style="transition-delay:0.15s">
+        <div class="speaker-img-wrap">
+          <div class="speaker-img-placeholder">
+            <div class="speaker-avatar">
+              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="22" r="12"/><path d="M10 54c0-12.1 9.9-22 22-22s22 9.9 22 22"/>
+              </svg>
+            </div>
+            <span class="speaker-img-label">Speaker Photo</span>
+          </div>
+          <div class="speaker-overlay"></div>
+        </div>
+        <div class="speaker-info">
+          <div class="speaker-name">Speaker Two</div>
+          <div class="speaker-role">AI Agent Developer</div>
+          <div class="speaker-org">Topic: Autonomous Agent Architecture</div>
+        </div>
+      </div>
+
+      <!-- Speaker 3 -->
+      <div class="speaker-card reveal" style="transition-delay:0.2s">
+        <div class="speaker-img-wrap">
+          <div class="speaker-img-placeholder">
+            <div class="speaker-avatar">
+              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="22" r="12"/><path d="M10 54c0-12.1 9.9-22 22-22s22 9.9 22 22"/>
+              </svg>
+            </div>
+            <span class="speaker-img-label">Speaker Photo</span>
+          </div>
+          <div class="speaker-overlay"></div>
+        </div>
+        <div class="speaker-info">
+          <div class="speaker-name">Speaker Three</div>
+          <div class="speaker-role">ML Engineer</div>
+          <div class="speaker-org">Topic: Real-World AI Evaluation</div>
+        </div>
+      </div>
+
+      <!-- Speaker 4 -->
+      <div class="speaker-card reveal" style="transition-delay:0.25s">
+        <div class="speaker-img-wrap">
+          <div class="speaker-img-placeholder">
+            <div class="speaker-avatar">
+              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="22" r="12"/><path d="M10 54c0-12.1 9.9-22 22-22s22 9.9 22 22"/>
+              </svg>
+            </div>
+            <span class="speaker-img-label">Speaker Photo</span>
+          </div>
+          <div class="speaker-overlay"></div>
+        </div>
+        <div class="speaker-info">
+          <div class="speaker-name">Speaker Four</div>
+          <div class="speaker-role">Legal Tech Specialist</div>
+          <div class="speaker-org">Topic: AI Ethics &amp; Data Privacy</div>
+        </div>
+      </div>
+
+      <!-- Speaker 5 -->
+      <div class="speaker-card reveal" style="transition-delay:0.3s">
+        <div class="speaker-img-wrap">
+          <div class="speaker-img-placeholder">
+            <div class="speaker-avatar">
+              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="22" r="12"/><path d="M10 54c0-12.1 9.9-22 22-22s22 9.9 22 22"/>
+              </svg>
+            </div>
+            <span class="speaker-img-label">Speaker Photo</span>
+          </div>
+          <div class="speaker-overlay"></div>
+        </div>
+        <div class="speaker-info">
+          <div class="speaker-name">Speaker Five</div>
+          <div class="speaker-role">Cybersecurity Researcher</div>
+          <div class="speaker-org">Topic: Post-Quantum AI Security</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAM FLOW -->
+<section id="program">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Agenda</div>
+      <h2 class="section-title">Program <span class="accent">Flow</span></h2>
+      <div class="divider"></div>
+      <p style="color:var(--text2);max-width:600px;font-size:1rem;line-height:1.8;">
+        A full-day immersive seminar structured around expert talks, demonstrations, and forward-looking discussions.
+      </p>
+    </div>
+
+    <div class="program-simple">
+      <div class="program-event reveal" style="transition-delay:0.05s">
+        <div class="event-dot"></div>
+        <div class="event-body">
+          <div class="event-time">7:30 AM – 8:00 AM</div>
+          <div class="event-title">Registration &amp; Arrival</div>
+          <div class="event-desc">Participant check-in, kit distribution, and networking</div>
+          <span class="event-tag break-tag">Logistics</span>
+        </div>
+      </div>
+
+      <div class="program-event reveal" style="transition-delay:0.1s">
+        <div class="event-dot"></div>
+        <div class="event-body">
+          <div class="event-time">8:00 AM – 8:30 AM</div>
+          <div class="event-title">Opening Program &amp; Welcome Remarks</div>
+          <div class="event-desc">Introduction by CCIS faculty, college overview, and seminar context</div>
+          <span class="event-tag keynote">Opening</span>
+        </div>
+      </div>
+
+      <div class="program-event reveal" style="transition-delay:0.15s">
+        <div class="event-dot"></div>
+        <div class="event-body">
+          <div class="event-time">8:30 AM – 9:30 AM</div>
+          <div class="event-title">Session 1: Cloud-Native AI Deployment</div>
+          <div class="event-desc">Expert talk on containerized AI services, orchestration pipelines, and scalable production infrastructure</div>
+          <span class="event-tag">Talk + Demo</span>
+        </div>
+      </div>
+
+      <div class="program-event reveal" style="transition-delay:0.2s">
+        <div class="event-dot"></div>
+        <div class="event-body">
+          <div class="event-time">9:30 AM – 10:30 AM</div>
+          <div class="event-title">Session 2: Autonomous Agent Architecture</div>
+          <div class="event-desc">Deep dive into memory systems, planning loops, tool-use patterns, and multi-agent coordination</div>
+          <span class="event-tag">Technical Talk</span>
+        </div>
+      </div>
+
+      <div class="program-event reveal" style="transition-delay:0.25s">
+        <div class="event-dot break"></div>
+        <div class="event-body">
+          <div class="event-time">10:30 AM – 10:45 AM</div>
+          <div class="event-title">Coffee Break</div>
+          <div class="event-desc">Short recess and networking</div>
+          <span class="event-tag break-tag">Break</span>
+        </div>
+      </div>
+
+      <div class="program-event reveal" style="transition-delay:0.3s">
+        <div class="event-dot"></div>
+        <div class="event-body">
+          <div class="event-time">10:45 AM – 11:45 AM</div>
+          <div class="event-title">Session 3: Real-World AI System Evaluation</div>
+          <div class="event-desc">Frameworks for evaluating AI performance, robustness, and fairness in production environments</div>
+          <span class="event-tag">Talk + Q&amp;A</span>
+        </div>
+      </div>
+
+      <div class="program-event reveal" style="transition-delay:0.35s">
+        <div class="event-dot break"></div>
+        <div class="event-body">
+          <div class="event-time">11:45 AM – 1:00 PM</div>
+          <div class="event-title">Lunch Break</div>
+          <div class="event-desc">Lunch and open networking session</div>
+          <span class="event-tag break-tag">Break</span>
+        </div>
+      </div>
+
+      <div class="program-event reveal" style="transition-delay:0.4s">
+        <div class="event-dot"></div>
+        <div class="event-body">
+          <div class="event-time">1:00 PM – 2:00 PM</div>
+          <div class="event-title">Session 4: AI Ethics, Legal Compliance &amp; Data Privacy</div>
+          <div class="event-desc">Philippine Data Privacy Act, global AI governance, responsible deployment, and ethical AI design</div>
+          <span class="event-tag">Expert Panel</span>
+        </div>
+      </div>
+
+      <div class="program-event reveal" style="transition-delay:0.45s">
+        <div class="event-dot"></div>
+        <div class="event-body">
+          <div class="event-time">2:00 PM – 3:00 PM</div>
+          <div class="event-title">Session 5: Post-Quantum Security for AI Systems</div>
+          <div class="event-desc">Emerging threats, post-quantum cryptography, and future-proofing AI infrastructure</div>
+          <span class="event-tag">Keynote</span>
+        </div>
+      </div>
+
+      <div class="program-event reveal" style="transition-delay:0.5s">
+        <div class="event-dot"></div>
+        <div class="event-body">
+          <div class="event-time">3:00 PM – 3:45 PM</div>
+          <div class="event-title">Open Forum &amp; Panel Discussion</div>
+          <div class="event-desc">Audience Q&amp;A with all speakers — career paths, industry trends, and advice for aspiring AI practitioners</div>
+          <span class="event-tag keynote">Panel</span>
+        </div>
+      </div>
+
+      <div class="program-event reveal" style="transition-delay:0.55s">
+        <div class="event-dot"></div>
+        <div class="event-body">
+          <div class="event-time">3:45 PM – 4:00 PM</div>
+          <div class="event-title">Closing Remarks &amp; Certificate Distribution</div>
+          <div class="event-desc">Recognition, closing message, and awarding of certificates of participation</div>
+          <span class="event-tag break-tag">Closing</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Get in Touch</div>
+      <h2 class="section-title">Contact <span class="accent">Us</span></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="contact-grid">
+      <div class="reveal-left">
+        <h3>Have questions?</h3>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div class="contact-detail">
+            <strong>Location</strong>
+            <p>Polytechnic University of the Philippines<br>A. Mabini St., Sta. Mesa, Manila</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📧</div>
+          <div class="contact-detail">
+            <strong>Email</strong>
+            <p>ccis@pup.edu.ph</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📱</div>
+          <div class="contact-detail">
+            <strong>Follow Us</strong>
+            <p>@PUP_CCIS on Facebook &amp; social media</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">🗓️</div>
+          <div class="contact-detail">
+            <strong>Event Date</strong>
+            <p>To Be Announced — 2025</p>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <div class="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" placeholder="Juan">
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" placeholder="dela Cruz">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" placeholder="you@email.com">
+          </div>
+          <div class="form-group">
+            <label>Student ID / Course</label>
+            <input type="text" placeholder="e.g. 2021-00001 / BSIT">
+          </div>
+          <div class="form-group">
+            <label>Your Message</label>
+            <textarea placeholder="Type your question or inquiry here..."></textarea>
+          </div>
+          <button class="btn-primary" style="width:100%;justify-content:center;" onclick="alert('Thank you! We will get back to you soon.')">
+            Send Message &nbsp;→
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo" style="font-size:1.8rem;">STACK<span>UP</span></a>
+        <p>Build the AI-Powered World Before It Builds Without You. A technical seminar by PUP CCIS — empowering the next generation of AI builders.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About CCIS</a></li>
+          <li><a href="#objectives">Objectives</a></li>
+          <li><a href="#speakers">Speakers</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Event</h4>
+        <ul>
+          <li><a href="#program">Program Flow</a></li>
+          <li><a href="#">Register Now</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>PUP Links</h4>
+        <ul>
+          <li><a href="https://www.pup.edu.ph" target="_blank">PUP Website</a></li>
+          <li><a href="#">CCIS Department</a></li>
+          <li><a href="#">Student Portal</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 PUP College of Computer &amp; Information Sciences. All rights reserved.</span>
+      <span>Made with <span class="heart">♥</span> for Stack Up Seminar</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // THEME TOGGLE
+  function toggleTheme() {
+    const html = document.documentElement;
+    const btn = document.getElementById('themeBtn');
+    if (html.getAttribute('data-theme') === 'dark') {
+      html.setAttribute('data-theme', 'light');
+      btn.textContent = '☽ Dark';
+    } else {
+      html.setAttribute('data-theme', 'dark');
+      btn.textContent = '☀ Light';
+    }
+  }
+
+  // MOBILE MENU
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
+
+  // SCROLL REVEAL
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+  // NAV ACTIVE SCROLL
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--red)' : '';
+    });
+  });
+</script>
+</body>
+</html>
