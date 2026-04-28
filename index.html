@@ -113,6 +113,55 @@
   }
   .mobile-menu a:hover { color: var(--red); }
 
+  /* hamburger → X animation */
+  .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* nav active link underline */
+  .nav-links a.active { color: var(--red) !important; position: relative; }
+  .nav-links a.active::after {
+    content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 2px; background: var(--red); border-radius: 2px;
+  }
+
+  /* back to top button */
+  #backToTop {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 900;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--red); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transform: translateY(16px) scale(0.8);
+    transition: opacity 0.3s, transform 0.3s;
+    box-shadow: 0 4px 20px rgba(232,40,26,0.5);
+  }
+  #backToTop.visible { opacity: 1; transform: translateY(0) scale(1); }
+  #backToTop:hover { transform: translateY(-3px) scale(1.05) !important; }
+  #backToTop svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* footer social icons */
+  .social-links { display: flex; gap: 10px; margin-top: 1rem; flex-wrap: wrap; }
+  .social-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 4px;
+    border: 1px solid var(--border); color: var(--text2);
+    text-decoration: none; font-size: 0.8rem;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600; letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .social-link:hover { border-color: var(--red); color: var(--red); }
+
+  /* nav register pill */
+  .nav-register {
+    display: inline-flex; align-items: center;
+    background: var(--red); color: #fff !important;
+    border-radius: 4px; padding: 7px 18px;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem;
+    font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .nav-register:hover { opacity: 0.85; transform: translateY(-1px); }
+
   /* ─── HERO ─── */
   .hero {
     min-height: 100vh; display: flex; align-items: center; justify-content: center;
@@ -582,6 +631,7 @@
       <li><a href="#speakers">Speakers</a></li>
       <li><a href="#program">Program</a></li>
       <li><a href="#contact">Contact</a></li>
+      <li><a href="#" class="nav-register" title="Registration link coming soon">Register Now</a></li>
     </ul>
     <div class="nav-actions">
       <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
@@ -1067,13 +1117,32 @@
   </div>
 </section>
 
+<!-- BACK TO TOP -->
+<button id="backToTop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="#" class="nav-logo" style="font-size:1.8rem;">STACK<span>UP</span></a>
+        <a href="#home" class="nav-logo" style="font-size:1.8rem;">STACK<span>UP</span></a>
         <p>Build the AI-Powered World Before It Builds Without You. A technical seminar by PUP CCIS — empowering the next generation of AI builders.</p>
+        <div class="social-links">
+          <a href="https://www.facebook.com" target="_blank" rel="noopener" class="social-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            Facebook
+          </a>
+          <a href="https://www.instagram.com" target="_blank" rel="noopener" class="social-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            Instagram
+          </a>
+          <a href="mailto:ccis@pup.edu.ph" class="social-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Email Us
+          </a>
+        </div>
       </div>
       <div class="footer-col">
         <h4>Navigate</h4>
@@ -1082,22 +1151,26 @@
           <li><a href="#about">About CCIS</a></li>
           <li><a href="#objectives">Objectives</a></li>
           <li><a href="#speakers">Speakers</a></li>
+          <li><a href="#program">Program Flow</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Event</h4>
         <ul>
+          <li><a href="#" title="Registration link coming soon">Register Now</a></li>
           <li><a href="#program">Program Flow</a></li>
-          <li><a href="#">Register Now</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#speakers">Speakers</a></li>
+          <li><a href="#contact">Inquiries</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>PUP Links</h4>
         <ul>
-          <li><a href="https://www.pup.edu.ph" target="_blank">PUP Website</a></li>
-          <li><a href="#">CCIS Department</a></li>
-          <li><a href="#">Student Portal</a></li>
+          <li><a href="https://www.pup.edu.ph" target="_blank" rel="noopener">PUP Website ↗</a></li>
+          <li><a href="https://www.pup.edu.ph/ccis" target="_blank" rel="noopener">CCIS Department ↗</a></li>
+          <li><a href="https://www.pup.edu.ph/myPUP" target="_blank" rel="noopener">Student Portal ↗</a></li>
+          <li><a href="mailto:ccis@pup.edu.ph">Email CCIS ↗</a></li>
         </ul>
       </div>
     </div>
@@ -1109,50 +1182,98 @@
 </footer>
 
 <script>
-  // THEME TOGGLE
+  /* ── THEME TOGGLE ── */
   function toggleTheme() {
     const html = document.documentElement;
     const btn = document.getElementById('themeBtn');
-    if (html.getAttribute('data-theme') === 'dark') {
-      html.setAttribute('data-theme', 'light');
-      btn.textContent = '☽ Dark';
-    } else {
-      html.setAttribute('data-theme', 'dark');
-      btn.textContent = '☀ Light';
-    }
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    btn.textContent = isDark ? '☽ Dark' : '☀ Light';
+    localStorage.setItem('stackup-theme', isDark ? 'light' : 'dark');
+  }
+  // Restore saved theme
+  const savedTheme = localStorage.getItem('stackup-theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('themeBtn').textContent = savedTheme === 'light' ? '☽ Dark' : '☀ Light';
   }
 
-  // MOBILE MENU
+  /* ── MOBILE MENU ── */
+  const hamburger = document.querySelector('.hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
   function toggleMenu() {
-    document.getElementById('mobileMenu').classList.toggle('open');
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('active', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
   }
   function closeMenu() {
-    document.getElementById('mobileMenu').classList.remove('open');
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('active');
+    document.body.style.overflow = '';
   }
+  // Close on outside click
+  mobileMenu.addEventListener('click', e => {
+    if (e.target === mobileMenu) closeMenu();
+  });
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeMenu();
+  });
 
-  // SCROLL REVEAL
-  const observer = new IntersectionObserver((entries) => {
+  /* ── SMOOTH SCROLL for all anchor links ── */
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      closeMenu();
+      const offset = 60; // nav height
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+
+  /* ── SCROLL REVEAL ── */
+  const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
         e.target.classList.add('visible');
+        revealObserver.unobserve(e.target);
       }
     });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => revealObserver.observe(el));
 
-  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
-
-  // NAV ACTIVE SCROLL
+  /* ── NAV ACTIVE LINK ON SCROLL ── */
   const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-  window.addEventListener('scroll', () => {
-    let current = '';
+  const navLinks = document.querySelectorAll('.nav-links a:not(.nav-register)');
+
+  function updateActiveNav() {
+    let current = 'home';
     sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
     });
     navLinks.forEach(a => {
-      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--red)' : '';
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
     });
-  });
+  }
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
+  updateActiveNav();
+
+  /* ── BACK TO TOP ── */
+  const backBtn = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    backBtn.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+
+  /* ── NAV SHADOW ON SCROLL ── */
+  const navEl = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    navEl.style.boxShadow = window.scrollY > 10
+      ? '0 2px 20px rgba(0,0,0,0.3)'
+      : 'none';
+  }, { passive: true });
 </script>
 </body>
 </html>
